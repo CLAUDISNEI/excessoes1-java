@@ -37,19 +37,12 @@ public class ProgramaExemplo1ExcecoesPersonalizadas {
 			System.out.print("Data saida:");
 			dataSaida = sdf.parse(sc.next());
 			
-			Date hoje = new Date();
-			
-			if (dataEntrada.before(hoje) || dataSaida.before(hoje)) {
-				System.out.println("Erro na reserva: Datas de update na reserva"
-						+ " devem ser datas futuras");
+			String erro = reserva.atulizarDatas(dataEntrada, dataSaida);
+			if( erro != null) {
+				System.out.println("Erro na reserva: " + erro);
 			}
-			else if(!dataSaida.after(dataEntrada)) {
-				System.out.println("Erro na reserva: Data de saída"
-						+ " deve ser maior que a Data de entrada" );
-				
-			}else {
-				reserva.atulizarDatas(dataEntrada, dataSaida);
-				System.out.println("Reserva: "+ reserva);
+			else {
+			System.out.println("Reserva: "+ reserva);
 			}
 			
 			

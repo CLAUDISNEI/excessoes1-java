@@ -38,9 +38,19 @@ public class Reserva {
 		return TimeUnit.DAYS.convert(diferenca, TimeUnit.MILLISECONDS);
 	}
 	
-	public void atulizarDatas(Date dataChegada, Date dataSaida) {
+	public String atulizarDatas(Date dataChegada, Date dataSaida) {	
+		Date hoje = new Date();	
+		if (dataChegada.before(hoje) || dataSaida.before(hoje)) {
+			return "Erro na reserva: Datas de update na reserva"
+					+ " devem ser datas futuras";
+		}
+		if(!dataSaida.after(dataChegada)) {
+			return "Erro na reserva: Data de saída"
+					+ " deve ser maior que a Data de entrada" ;	
+		}
 		this.dataChegada = dataChegada;
 		this.dataSaída = dataSaida;
+		return null;
 	}
 	
 	@Override
