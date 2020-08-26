@@ -4,17 +4,24 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+import modelos.excessoes.DominioExcessao;
+
 public class Reserva {
+	
 	private Integer numeroQuarto;
 	private Date dataChegada;
-	private Date dataSaída;
+	private Date dataSaida;
 	
 	private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 	
-	public Reserva(Integer numeroQuarto, Date dataChegada, Date dataSaída) {
+	public Reserva(Integer numeroQuarto, Date dataChegada, Date dataSaida)  {
+		if(!dataSaida.after(dataChegada)) {
+			throw new DominioExcessao("Erro na reserva: Data de saída"
+					+ " deve ser maior que a Data de entrada") ;	
+		}
 		this.numeroQuarto = numeroQuarto;
 		this.dataChegada = dataChegada;
-		this.dataSaída = dataSaída;
+		this.dataSaida = dataSaida;
 	}
 
 	public Integer getNumeroQuarto() {
@@ -30,27 +37,26 @@ public class Reserva {
 	}
 
 	public Date getDataSaída() {
-		return dataSaída;
+		return dataSaida;
 	}
 	
 	public long duracao() {
-		long diferenca = dataSaída.getTime() - dataChegada.getTime();
+		long diferenca = dataSaida.getTime() - dataChegada.getTime();
 		return TimeUnit.DAYS.convert(diferenca, TimeUnit.MILLISECONDS);
 	}
 	
-	public String atulizarDatas(Date dataChegada, Date dataSaida) {	
+	public void atulizarDatas(Date dataChegada, Date dataSaida)  {	
 		Date hoje = new Date();	
 		if (dataChegada.before(hoje) || dataSaida.before(hoje)) {
-			return "Erro na reserva: Datas de update na reserva"
-					+ " devem ser datas futuras";
+			throw new DominioExcessao( "Erro na reserva: Datas de update na reserva"
+					+ " devem ser datas futuras");
 		}
 		if(!dataSaida.after(dataChegada)) {
-			return "Erro na reserva: Data de saída"
-					+ " deve ser maior que a Data de entrada" ;	
+			throw new DominioExcessao("Erro na reserva: Data de saída"
+					+ " deve ser maior que a Data de entrada") ;	
 		}
 		this.dataChegada = dataChegada;
-		this.dataSaída = dataSaida;
-		return null;
+		this.dataSaida = dataSaida;
 	}
 	
 	@Override
@@ -60,7 +66,7 @@ public class Reserva {
 				+ ", Data Chegada: "
 				+ sdf.format(dataChegada)
 				+ ", Data saída: "
-				+ sdf.format(dataSaída)
+				+ sdf.format(dataSaida)
 				+ ", "
 				+ duracao()
 				+" noites";
